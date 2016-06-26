@@ -1,0 +1,15 @@
+<form>
+  <h2> I am @<input type="text" name="handle"> on Twitter. </h2>
+</form>
+
+<div class="dropdown">
+  <h3> Delete my tweets from
+    <select>
+      <option value="alltime">All time</option>
+      <option value="3months">Before 3 months ago</option>
+      <option value="6months">Before 6 months ago</option>
+    </select>
+  </h3>
+</div>
+
+<button type="submit">Submit</button>
