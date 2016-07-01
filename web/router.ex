@@ -17,10 +17,8 @@ defmodule DeleteYourTweets.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/signin", SessionController, :signin
+    get "/callback", SessionController, :callback
+    post "/tweets/delete", TweetController, :delete
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", DeleteYourTweets do
-  #   pipe_through :api
-  # end
 end
