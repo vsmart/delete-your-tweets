@@ -1,7 +1,9 @@
 defmodule DeleteYourTweets.SessionController do
   use DeleteYourTweets.Web, :controller
 
-  def signin(conn, _params) do
+  def create(conn, _params) do
+    IO.puts "HAIIIIII"
+
     consumer_key = System.get_env("TWITTER_CONSUMER_KEY")
     consumer_secret = System.get_env("TWITTER_CONSUMER_SECRET")
 
@@ -23,6 +25,8 @@ defmodule DeleteYourTweets.SessionController do
       access_token: access_token.oauth_token,
       access_token_secret: access_token.oauth_token_secret)
 
-    redirect(conn, to: "/")
+    conn
+    |> put_session(:screen_name, access_token.screen_name)
+    |> redirect(to: "/")
   end
 end
