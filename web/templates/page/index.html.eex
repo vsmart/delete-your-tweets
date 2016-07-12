@@ -1,15 +1,15 @@
 <form action="<%=session_path(@conn, :create)%>" method="post">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
-  <h1> I am @
-  <%=
-    if (screen_name = Plug.Conn.get_session(@conn, :screen_name)) do
-      screen_name
-    else
-      "__________"
-    end%>
-  on Twitter.
-  <button type="submit">Sign me in</button>
-</h1>
+  <h1>
+    I am @<%=
+      if (screen_name = Plug.Conn.get_session(@conn, :screen_name)) do
+        screen_name
+      else
+        "__________"
+      end%>
+    on Twitter.
+    <button type="submit">Sign me in</button>
+  </h1>
 </form>
 
 <form action="<%=tweet_path(@conn, :delete)%>" method="post">
@@ -18,8 +18,8 @@
     <div class="dropdown">
       <select name="older_than_months">
         <option value=0>All time</option>
-        <option value=3>Before 3 months ago</option>
-        <option value=6>Before 6 months ago</option>
+        <!-- <option value=3>Before 3 months ago</option>
+        <option value=6>Before 6 months ago</option> -->
       </select>
     </div>
     <button type="submit">Go</button>
