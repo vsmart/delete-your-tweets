@@ -1,5 +1,6 @@
 install:
 	mix deps.get
+	npm install
 	mix compile
 
 start:
