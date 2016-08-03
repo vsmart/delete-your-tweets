@@ -5,12 +5,13 @@ defmodule DeleteYourTweets.SessionController do
     # TODO: PR to Extwitter to make request_token return {:ok, token}
     try do
       token = ExTwitter.request_token("http://127.0.0.1:4000/callback")
-      IO.puts "Got a token back"
-      token
       {:ok, authenticate_url} = ExTwitter.authenticate_url(token.oauth_token)
       redirect(conn, external: authenticate_url)
     catch
-      _,_ -> redirect(conn, to: "/")
+      _,_ ->
+        conn
+        |> put_flash(:error, "Could not sign you into Twitter, sorry.")
+        |> redirect(to: "/")
     end
   end
 
