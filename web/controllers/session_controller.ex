@@ -2,25 +2,16 @@ defmodule DeleteYourTweets.SessionController do
   use DeleteYourTweets.Web, :controller
 
   def create(conn, _params) do
-    IO.puts "HAIIIIII"
-
-    consumer_key = System.get_env("TWITTER_CONSUMER_KEY")
-    consumer_secret = System.get_env("TWITTER_CONSUMER_SECRET")
-
-    ExTwitter.configure(
-      consumer_key: consumer_key,
-      consumer_secret: consumer_secret)
-
     # TODO: PR to Extwitter to make request_token return {:ok, token}
-    token = try do
+    try do
       token = ExTwitter.request_token("http://127.0.0.1:4000/callback")
+      IO.puts "Got a token back"
       token
+      {:ok, authenticate_url} = ExTwitter.authenticate_url(token.oauth_token)
+      redirect(conn, external: authenticate_url)
     catch
       _,_ -> redirect(conn, to: "/")
     end
-    {:ok, authenticate_url} = ExTwitter.authenticate_url(token.oauth_token)
-
-    redirect(conn, external: authenticate_url)
   end
 
   def callback(conn, %{"oauth_token"=> oauth_token, "oauth_verifier" => oauth_verifier}) do

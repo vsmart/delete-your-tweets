@@ -6,6 +6,8 @@ defmodule DeleteYourTweets do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    configure_twitter_client
+
     children = [
       # Start the endpoint when the application starts
       supervisor(DeleteYourTweets.Endpoint, []),
@@ -26,5 +28,18 @@ defmodule DeleteYourTweets do
   def config_change(changed, _new, removed) do
     DeleteYourTweets.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def configure_twitter_client do
+    consumer_key = System.get_env("TWITTER_CONSUMER_KEY")
+    consumer_secret = System.get_env("TWITTER_CONSUMER_SECRET")
+
+    if !consumer_key || !consumer_secret do
+      raise "Please set TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET"
+    end
+
+    ExTwitter.configure(
+      consumer_key: consumer_key,
+      consumer_secret: consumer_secret)
   end
 end
