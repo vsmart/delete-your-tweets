@@ -18,6 +18,7 @@ defmodule DeleteYourTweets.Router do
 
     get "/", PageController, :index
     post "/signin", SessionController, :create
+    post "/signout", SessionController, :delete
     get "/callback", SessionController, :callback
     post "/tweets/delete", TweetController, :delete
   end

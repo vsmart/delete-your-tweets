@@ -10,7 +10,7 @@ defmodule DeleteYourTweets.SessionController do
     catch
       _,_ ->
         conn
-        |> put_flash(:error, "Could not sign you into Twitter, sorry.")
+        |> put_flash(:error, "Could not sign you into Twitter. 💩")
         |> redirect(to: "/")
     end
   end
@@ -25,6 +25,15 @@ defmodule DeleteYourTweets.SessionController do
 
     conn
     |> put_session(:screen_name, access_token.screen_name)
+    |> redirect(to: "/")
+  end
+
+  def delete(conn, _params) do
+    DeleteYourTweets.configure_twitter_client
+
+    conn
+    |> delete_session(:screen_name)
+    |> put_flash(:info, "You signed out. Bye 👋")
     |> redirect(to: "/")
   end
 end
