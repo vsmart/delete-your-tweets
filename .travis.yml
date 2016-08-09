@@ -1,7 +1,7 @@
 language: elixir
 before_install:
   - mix local.hex --force
-  - make install
+  - mix deps.get
 script:
   - make test
 env:
