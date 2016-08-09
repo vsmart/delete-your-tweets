@@ -5,3 +5,6 @@ install:
 
 start:
 	mix phoenix.server
+
+test:
+	mix test
