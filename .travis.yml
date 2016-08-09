@@ -1,6 +1,10 @@
 language: elixir
+before_install:
+  - mix local.hex --force
 install:
-- make install
+  - make install
 script:
-- make test
-
+  - make test
+env:
+  - TWITTER_CONSUMER_KEY=abc
+  - TWITTER_CONSUMER_SECRET=abc
