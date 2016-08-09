@@ -7,5 +7,4 @@ before_install:
 script:
   - mix test
 env:
-  - TWITTER_CONSUMER_KEY=abc
-  - TWITTER_CONSUMER_SECRET=abc
+  - TWITTER_CONSUMER_KEY=abc TWITTER_CONSUMER_SECRET=abc
