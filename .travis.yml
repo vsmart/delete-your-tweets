@@ -3,7 +3,7 @@ before_install:
   - mix local.hex --force
   - mix deps.get
 script:
-  - make test
+  - mix test
 env:
   - TWITTER_CONSUMER_KEY=abc
   - TWITTER_CONSUMER_SECRET=abc
