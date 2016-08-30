@@ -2,17 +2,20 @@ defmodule DeleteYourTweets.TweetController do
   use DeleteYourTweets.Web, :controller
 
   def delete(conn, %{"older_than_months" => older_than_months}) do
-    older_than_months
-    |> fetch_tweets
-    |> delete_tweets
+    max_id = get_latest_tweet_id
 
     conn
-    |> put_flash(:info, "Deleted all your tweets older than #{older_than_months}. 🎉")
+    |> put_flash(:info, "last tweet id is #{max_id}. 🎉")
     |> redirect(to: "/")
   end
 
-  defp fetch_tweets(number_months) do
-    ExTwitter.user_timeline(count: 3)
+  defp get_latest_tweet_id  do
+    [%ExTwitter.Model.Tweet{id: id}] = ExTwitter.user_timeline(count: 1)
+    id
+  end
+
+  defp fetch_tweets(max_id) do
+    ExTwitter.user_timeline(count: 3, max_id: max_id)
   end
 
   defp delete_tweets(tweets) do
