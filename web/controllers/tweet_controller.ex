@@ -17,12 +17,14 @@ defmodule DeleteYourTweets.TweetController do
 
   defp fetch_and_delete_from(max_id) do
     tweets = fetch_tweets(max_id)
-    IO.puts "Fetched #{Enum.count(tweets)} tweets."
-    delete_tweets(tweets)
+    number_of_tweets = Enum.count(tweets)
+    IO.puts "Fetched #{number_of_tweets} tweets."
 
-    if Enum.count(tweets) > 0 do
-      %ExTwitter.Model.Tweet{id: last_tweet_id} = List.last(tweets)
-      fetch_and_delete_from(last_tweet_id)
+    tweets |> delete_tweets
+
+    if number_of_tweets > 0 do
+      last_id = last_tweet_id(tweets)
+      fetch_and_delete_from(last_id)
     end
   end
 
@@ -35,5 +37,10 @@ defmodule DeleteYourTweets.TweetController do
       fn tweet ->
         ExTwitter.destroy_status(tweet.id)
       end)
+  end
+
+  defp last_tweet_id(tweets) do
+    %ExTwitter.Model.Tweet{id: last_tweet_id} = List.last(tweets)
+    last_tweet_id
   end
 end
