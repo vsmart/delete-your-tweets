@@ -1,11 +1,15 @@
 language: elixir
 elixir:
-  - 1.3.2
+- 1.3.2
 before_install:
-  - mix local.hex --force
-  - mix local.rebar --force
-  - mix do deps.get, deps.compile
+- mix local.hex --force
+- mix local.rebar --force
+- mix do deps.get, deps.compile
 script:
-  - mix test
+- mix test
 env:
-  - TWITTER_CONSUMER_KEY=abc TWITTER_CONSUMER_SECRET=abc
+- TWITTER_CONSUMER_KEY=abc TWITTER_CONSUMER_SECRET=abc
+deploy:
+  provider: heroku
+  api_key:
+    secure: Y/Kqf6v0zEbOSYaXbRGlMVh/MCCRZR1WsrqSzwIi+u0Zf1gy6TNCz+phEkOm3t1uG1OsQshZMhLdByvWq6pJYF6nQAV7htRiPTDzBcwSqt3uD8owj97ec2xhk985fstTrFPipyfWWQZZRV2GZ5X4GiQv/slzyhxWzB6IL2LWXAFEWTd8GSk4rVYBZfO0eNSAZpL9zgvymR1rFn6A0Fi8H8UhlIhkO/n5x6P7z4meQildqGkjxU4pisg9milhD8l1KL9DqXLKwVRJnG26enZld+5dXxI9M4ujngYA2h5f5nCTblWaHbkH3kEV0dq52KpHFp+7n8I6VekD/uDzZOxMQguky6YwgDG/fgu+084Nsaero+Re165zI0c2oSuhoaDYdf6jd5QhPRsTm6aS3p6sH5HNTopuYUxN7vDjpEmxAYaCKkbqaJV0js2WyYp6Ct+q2sjpL0sDCoe8s1gtVvSaqRVImk5p48mAB6j6raEeqmoMZ+KiJxjwUT0Qz+h2WbcvJGWVJGfOWb8yqSAF06LH7sRJcaAieUA/RVWR9TuKNEVKtYZqj1GtAo9Y3ozgD8Kx/O388rORaXFdLkHRr2rGnqK/1Uj8ZOttLRXyRsHz24DJ8VQEUTP7jZOrG0X8FL/krPAEicCVzECqLhEYztj45Raf2J2xU5FkJk5J+7bcs7o=
