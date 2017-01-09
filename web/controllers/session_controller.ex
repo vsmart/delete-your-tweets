@@ -4,7 +4,8 @@ defmodule DeleteYourTweets.SessionController do
   def create(conn, _params) do
     # TODO: PR to Extwitter to make request_token return {:ok, token}
     try do
-      token = ExTwitter.request_token("http://127.0.0.1:4000/callback")
+      callback_url = System.get_env("CALLBACK_URL")
+      token = ExTwitter.request_token(callback_url)
       {:ok, authenticate_url} = ExTwitter.authenticate_url(token.oauth_token)
       redirect(conn, external: authenticate_url)
     catch
