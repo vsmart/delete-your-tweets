@@ -1,34 +1,37 @@
-<p>
+<h1>delete your tweets</h1>
+<br>
+<div class="step">
 <form action="<%=session_path(@conn, :create)%>" method="post">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
-    <b>Step 1:</b>
-    I am @<%= current_user_else_default(@conn) %> on Twitter.
-    <%= if current_user?(@conn) do %>
-      ✅
-    <% else %>
-      <button type=submit>Sign in</button>
-    <% end %>
+  <div class="step-circle">#1</div>
+  I am @<%= current_user_else_default(@conn) %> on Twitter.
+  <%= if current_user?(@conn) do %>
+    ✅
+  <% else %>
+    <button type=submit class="action-button">Sign in</button>
+  <% end %>
 </form>
-
 <%= if current_user?(@conn) do %>
-<form action="<%=session_path(@conn, :delete)%>" method="post">
-  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
-  <button type=submit>Sign out</button>
-</form>
+  <form action="<%=session_path(@conn, :delete)%>" method="post">
+    <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
+    <button type=submit>Sign out</button>
+  </form>
 <% end %>
-</p>
-
-<p>
+</div>
+<div class="step">
 <form action="<%=tweet_path(@conn, :delete)%>" method="post">
-  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
+  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>"/>
     <div class="dropdown">
-    <b>Step 2:</b> I want to delete tweets from
+    <div class="step-circle">#2</div>
+    Let's delete tweets
       <select name="older_than_months">
-        <option value=0>All time</option>
-        <option value=3>Before 3 months ago</option>
-        <option value=6>Before 6 months ago</option>
+        <option value=0>from all time</option>
+        <option value=3>older than 3 months.</option>
+        <option value=6>older than 6 months.</option>
       </select>
-    <button type="submit">Go</button>
+    <button type="submit" class="action-button">Go</button>
     </div>
-<form>
-</p>
+</form>
+</div>
+<div class="step">
+ <div class="step-circle">#3</div>All done!</div>

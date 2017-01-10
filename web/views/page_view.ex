@@ -5,7 +5,7 @@ defmodule DeleteYourTweets.PageView do
     if user = current_user?(conn) do
       user
     else
-      "______"
+      "________"
     end
   end
 
