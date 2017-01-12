@@ -1,6 +1,6 @@
 <h1>delete your tweets</h1>
 <br>
-<div class="step">
+<div class="<%=show_active_or_inactive_div(:one, @step)%>">
 <form action="<%=session_path(@conn, :create)%>" method="post">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
   <div class="step-circle">#1</div>
@@ -18,7 +18,8 @@
   </form>
 <% end %>
 </div>
-<div class="step">
+
+<div class="<%=show_active_or_inactive_div(:two, @step)%>">
 <form action="<%=tweet_path(@conn, :delete)%>" method="post">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>"/>
     <div class="dropdown">
@@ -33,5 +34,6 @@
     </div>
 </form>
 </div>
-<div class="step">
+
+<div class="<%=show_active_or_inactive_div(:three, @step)%>">
  <div class="step-circle">#3</div>All done!</div>
