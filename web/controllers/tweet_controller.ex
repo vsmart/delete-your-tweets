@@ -2,8 +2,8 @@ defmodule DeleteYourTweets.TweetController do
   use DeleteYourTweets.Web, :controller
 
   def delete(conn, %{"older_than_months" => older_than_months}) do
-    #  latest_tweet_id = get_latest_tweet_id
-    #fetch_and_delete_from(latest_tweet_id)
+    latest_tweet_id = get_latest_tweet_id
+    fetch_and_delete_from(latest_tweet_id)
 
     conn
     |> put_flash(:info, "Deleted a bunch of your tweets. Wheee 🎉")
