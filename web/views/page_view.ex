@@ -12,4 +12,12 @@ defmodule DeleteYourTweets.PageView do
   def current_user?(conn) do
     Plug.Conn.get_session(conn, :screen_name)
   end
+
+  def show_active_or_inactive_div(step, current_step) do
+    if step == current_step do
+      "step-active"
+    else
+      "step-inactive"
+    end
+  end
 end

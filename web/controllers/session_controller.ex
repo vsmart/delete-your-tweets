@@ -26,7 +26,8 @@ defmodule DeleteYourTweets.SessionController do
 
     conn
     |> put_session(:screen_name, access_token.screen_name)
-    |> redirect(to: "/")
+    |> put_view(DeleteYourTweets.PageView)
+    |> render("index.html", step: :two)
   end
 
   def delete(conn, _params) do

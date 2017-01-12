@@ -49,7 +49,7 @@ button {
   margin-right:10px;
 }
 
-.step{
+.step-active{
   text-align: justify;
   height:100px;
   margin-top:10px;
@@ -60,6 +60,20 @@ button {
   font-size:20px;
   line-height:50px;
   background: #d9f4ee;
+}
+
+.step-inactive{
+  text-align: justify;
+  height:100px;
+  margin-top:10px;
+  margin-bottom:10px;
+  padding-left:15px;
+  padding-right:15px;
+  padding-top:20px;
+  font-size:20px;
+  line-height:50px;
+  background: #d9f4ee;
+  opacity: 0.2;
 }
 
 .action-button{

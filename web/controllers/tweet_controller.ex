@@ -7,7 +7,8 @@ defmodule DeleteYourTweets.TweetController do
 
     conn
     |> put_flash(:info, "Deleted a bunch of your tweets. Wheee 🎉")
-    |> redirect(to: "/")
+    |> put_view(DeleteYourTweets.PageView)
+    |> render("index.html", step: :three)
   end
 
   defp get_latest_tweet_id  do
