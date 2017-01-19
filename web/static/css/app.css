@@ -18,6 +18,14 @@ h1 {
   color:#06998c;
 }
 
+a {
+  color:inherit;
+}
+
+a:hover{
+  color:inherit;
+}
+
 button {
   min-width: 100px;
 }
@@ -59,7 +67,6 @@ button {
   padding-top:20px;
   font-size:20px;
   line-height:50px;
-  background: #d9f4ee;
 }
 
 .step-inactive{
@@ -72,7 +79,6 @@ button {
   padding-top:20px;
   font-size:20px;
   line-height:50px;
-  background: #d9f4ee;
   opacity: 0.2;
 }
 
