@@ -5,8 +5,9 @@ defmodule DeleteYourTweets.TweetController do
   def delete(conn, %{"older_than_months" => older_than_months}) do
     until_date = get_until_date(older_than_months)
     latest_tweet_id = get_latest_tweet_id(until_date)
-    latest_tweet_id =  fetch_and_search_for_max_id(until_date, latest_tweet_id)
-    # fetch_and_delete_from(latest_tweet_id)
+    %ExTwitter.Model.Tweet{id: id, text: text} =  fetch_and_search_for_max_id(until_date, latest_tweet_id)
+
+    IO.puts "ID: #{id} and Text: #{text}"
 
     conn
     |> put_flash(:info, "Deleted a bunch of your tweets. Wheee 🎉")
@@ -19,7 +20,6 @@ defmodule DeleteYourTweets.TweetController do
 
     Timex.today
     |> Timex.shift(months: -months)
-    |> Timex.format!("%Y-%m-%d", :strftime)
   end
 
   defp get_latest_tweet_id(until_date)  do
@@ -32,26 +32,21 @@ defmodule DeleteYourTweets.TweetController do
     tweets = fetch_tweets(max_id)
     number_of_tweets = Enum.count(tweets)
     IO.puts "fetch_and_searching #{number_of_tweets} tweets."
-    id = -1
 
-    Enum.each(tweets, fn tweet ->
-      if older_than_date(date, tweet) do
-        IO.puts "FOUND IT"
-        id = tweet.id
-      end
-    end)
+    older_tweet = Enum.find(tweets, fn tweet -> older_than_date(date, tweet)  end)
 
-
-    if (id != -1) || (number_of_tweets > 0) do
+    if (older_tweet == nil) && (number_of_tweets > 0) do
       last_id = last_tweet_id(tweets)
       fetch_and_search_for_max_id(date, last_id)
+    else
+      older_tweet
     end
   end
 
   defp older_than_date(date,tweet) do
     %ExTwitter.Model.Tweet{created_at: created_at} = tweet
     parsed_date = Timex.parse!(created_at, "%a %b %d %T %z %Y", :strftime)
-    (parsed_date > date)
+    Timex.before?(parsed_date, date)
   end
 
   defp fetch_and_delete_from(max_id) do
