@@ -2,7 +2,7 @@
 <br>
 <div class="<%=show_active_or_inactive_div(:one, @step)%>">
 <form action="<%=session_path(@conn, :create)%>" method="post">
-  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
+  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
   <div class="step-circle">#1</div>
   I am @<%= current_user_else_default(@conn) %> on Twitter.
   <%= if current_user?(@conn) do %>
@@ -13,7 +13,7 @@
 </form>
 <%= if current_user?(@conn) do %>
   <form action="<%=session_path(@conn, :delete)%>" method="post">
-    <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>">
+    <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
     <button type=submit>Sign out</button>
   </form>
 <% end %>
@@ -21,7 +21,7 @@
 
 <div class="<%=show_active_or_inactive_div(:two, @step)%>">
 <form action="<%=tweet_path(@conn, :delete)%>" method="post">
-  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token %>"/>
+  <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>"/>
     <div class="dropdown">
     <div class="step-circle">#2</div>
     Let's delete tweets
