@@ -6,12 +6,13 @@ defmodule DeleteYourTweets.TweetController do
     from_date = Timex.now
     to_date = calculate_to_date(delete_from)
 
-    latest_tweet_id = get_latest_tweet_id(to_date)
-    %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(to_date, latest_tweet_id)
+    info =  "From date: #{IO.inspect from_date} and to date: #{IO.inspect to_date}"
+    to_tweet_id = get_newest_tweet()
 
+    # %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(to_date, latest_tweet_id)
 
     conn
-    |> put_flash(:info, "Deleted a bunch of tweets. Yay!")
+    |> put_flash(:info, info)
     |> put_view(DeleteYourTweets.PageView)
     |> render("index.html", step: :three)
   end
@@ -24,8 +25,8 @@ defmodule DeleteYourTweets.TweetController do
     end
   end
 
-  defp get_latest_tweet_id(until_date)  do
-    [%ExTwitter.Model.Tweet{id: id, text: text}] = ExTwitter.user_timeline(count: 1, until: until_date)
+  defp get_newest_tweet()  do
+    [%ExTwitter.Model.Tweet{id: id}] = ExTwitter.user_timeline(count: 1)
     id
   end
 
