@@ -2,24 +2,26 @@ defmodule DeleteYourTweets.TweetController do
   use DeleteYourTweets.Web, :controller
   use Timex
 
-  def delete(conn, %{"older_than_months" => older_than_months}) do
-    until_date = get_until_date(older_than_months)
-    latest_tweet_id = get_latest_tweet_id(until_date)
-    %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(until_date, latest_tweet_id)
+  def delete(conn, %{"delete_from" => delete_from}) do
+    from_date = Timex.now
+    to_date = calculate_to_date(delete_from)
 
-    info = "First tweet older than #{older_than_months} is: \nDate: #{created_at} ID: #{id} | Text: #{text}"
+    latest_tweet_id = get_latest_tweet_id(to_date)
+    %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(to_date, latest_tweet_id)
+
 
     conn
-    |> put_flash(:info, info)
+    |> put_flash(:info, "Deleted a bunch of tweets. Yay!")
     |> put_view(DeleteYourTweets.PageView)
     |> render("index.html", step: :three)
   end
 
-  def get_until_date(months_str) do
-    months = String.to_integer(months_str)
-
-    Timex.today
-    |> Timex.shift(months: -months)
+  def calculate_to_date(delete_from) do
+    case delete_from do
+      "today" -> Timex.today
+      "this_week" -> Timex.today |> Timex.shift(weeks: -1)
+      "this_month" -> Timex.today |> Timex.shift(months: -1)
+    end
   end
 
   defp get_latest_tweet_id(until_date)  do
