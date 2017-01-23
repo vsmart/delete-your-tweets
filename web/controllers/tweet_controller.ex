@@ -7,9 +7,8 @@ defmodule DeleteYourTweets.TweetController do
     to_date = calculate_to_date(delete_from)
 
     info =  "From date: #{IO.inspect from_date} and to date: #{IO.inspect to_date}"
-    to_tweet_id = get_newest_tweet()
-
-    # %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(to_date, latest_tweet_id)
+    to_tweet_id = get_newest_tweet_id()
+    fetch_and_delete_from(to_date, to_tweet_id)
 
     conn
     |> put_flash(:info, info)
@@ -25,40 +24,26 @@ defmodule DeleteYourTweets.TweetController do
     end
   end
 
-  defp get_newest_tweet()  do
+  defp get_newest_tweet_id()  do
     [%ExTwitter.Model.Tweet{id: id}] = ExTwitter.user_timeline(count: 1)
     id
   end
 
-  defp fetch_and_search_for_max_id(date, max_id) do
-    tweets = fetch_tweets(max_id)
-    number_of_tweets = Enum.count(tweets)
-
-    older_tweet = Enum.find(tweets, fn tweet -> older_than_date(date, tweet)  end)
-
-    if (older_tweet == nil) && (number_of_tweets > 0) do
-      last_id = last_tweet_id(tweets)
-      fetch_and_search_for_max_id(date, last_id)
-    else
-      older_tweet
-    end
-  end
-
-  defp older_than_date(date,tweet) do
+  defp older_than_date(date, tweet) do
     %ExTwitter.Model.Tweet{created_at: created_at} = tweet
     parsed_date = Timex.parse!(created_at, "%a %b %d %T %z %Y", :strftime)
     Timex.before?(parsed_date, date)
   end
 
-  defp fetch_and_delete_from(max_id) do
+  defp fetch_and_delete_from(date, max_id) do
     tweets = fetch_tweets(max_id)
     number_of_tweets = Enum.count(tweets)
+    older_tweet = Enum.find(tweets, fn tweet -> older_than_date(date, tweet)  end)
 
-    tweets |> delete_tweets
-
-    if number_of_tweets > 0 do
+    if (older_tweet == nil) && (number_of_tweets > 0) do
+      tweets |> delete_tweets
       last_id = last_tweet_id(tweets)
-      fetch_and_delete_from(last_id)
+      fetch_and_delete_from(date, last_id)
     end
   end
 
@@ -69,12 +54,13 @@ defmodule DeleteYourTweets.TweetController do
   defp delete_tweets(tweets) do
     Enum.map(tweets,
       fn tweet ->
-        ExTwitter.destroy_status(tweet.id)
+        # ExTwitter.destroy_status(tweet.id)
+        IO.puts ">>>> Deleting tweet #{IO.inspect tweet.text}"
       end)
   end
 
   defp last_tweet_id(tweets) do
-    %ExTwitter.Model.Tweet{created_at: date, id: last_tweet_id} = List.last(tweets)
-    last_tweet_id
+    %ExTwitter.Model.Tweet{created_at: date, id: id} = List.last(tweets)
+    id
   end
 end
