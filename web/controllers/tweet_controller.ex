@@ -6,10 +6,11 @@ defmodule DeleteYourTweets.TweetController do
     from_date = Timex.now
     to_date = calculate_to_date(delete_from)
 
-    info =  "From date: #{IO.inspect from_date} and to date: #{IO.inspect to_date}"
     to_tweet_id = get_newest_tweet_id()
     fetch_and_delete_from(to_date, to_tweet_id)
 
+
+    info =  "From date: #{IO.inspect from_date} and to date: #{IO.inspect to_date}"
     conn
     |> put_flash(:info, info)
     |> put_view(DeleteYourTweets.PageView)
@@ -37,14 +38,23 @@ defmodule DeleteYourTweets.TweetController do
 
   defp fetch_and_delete_from(date, max_id) do
     tweets = fetch_tweets(max_id)
-    number_of_tweets = Enum.count(tweets)
-    older_tweet = Enum.find(tweets, fn tweet -> older_than_date(date, tweet)  end)
+    tweets_to_be_deleted = Enum.reject(tweets, fn tweet -> older_than_date(date, tweet)  end)
 
-    if (older_tweet == nil) && (number_of_tweets > 0) do
-      tweets |> delete_tweets
+    tweets_to_be_deleted |> delete_tweets
+
+    if !(reached_date_restriction(tweets, tweets_to_be_deleted))
+      && !(fetched_all_tweets(tweets)) do
       last_id = last_tweet_id(tweets)
       fetch_and_delete_from(date, last_id)
     end
+  end
+
+  defp reached_date_restriction(tweets, tweets_to_be_deleted) do
+    (Enum.count(tweets_to_be_deleted) < Enum.count(tweets))
+  end
+
+  defp fetched_all_tweets(tweets) do
+    (Enum.count(tweets) == 0)
   end
 
   defp fetch_tweets(max_id) do
@@ -54,13 +64,12 @@ defmodule DeleteYourTweets.TweetController do
   defp delete_tweets(tweets) do
     Enum.map(tweets,
       fn tweet ->
-        # ExTwitter.destroy_status(tweet.id)
-        IO.puts ">>>> Deleting tweet #{IO.inspect tweet.text}"
+        ExTwitter.destroy_status(tweet.id)
       end)
   end
 
   defp last_tweet_id(tweets) do
-    %ExTwitter.Model.Tweet{created_at: date, id: id} = List.last(tweets)
+    %ExTwitter.Model.Tweet{id: id} = List.last(tweets)
     id
   end
 end
