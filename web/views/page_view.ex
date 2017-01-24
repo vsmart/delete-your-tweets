@@ -14,10 +14,11 @@ defmodule DeleteYourTweets.PageView do
   end
 
   def show_active_or_inactive_div(step, current_step) do
-    if step == current_step do
-      "step-active"
-    else
-      "step-inactive"
+    cond do
+      (current_step == :one) -> "step-inactive"
+      (current_step == :two) && (step == :two) -> "step-active"
+      (current_step == :two) && (step == :three) -> "step-inactive"
+      (current_step == :three) -> "step-active"
     end
   end
 end

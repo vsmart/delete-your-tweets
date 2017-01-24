@@ -1,6 +1,6 @@
 <h1><a href="<%=page_path(@conn, :index)%>">delete your tweets</a></h1>
 <br>
-<div class="<%=show_active_or_inactive_div(:one, @step)%>">
+<div class="step-active">
 <form action="<%=session_path(@conn, :create)%>" method="post">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
   <div class="step-circle">#1</div>
