@@ -1,7 +1,7 @@
 <h1><a href="<%=page_path(@conn, :index)%>">delete your tweets</a></h1>
 <br>
 <div class="step-active">
-<form action="<%=session_path(@conn, :create)%>" method="post">
+<form action="<%=session_path(@conn, :create)%>" method="post" class="form-signin">
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
   <div class="step-circle">#1</div>
   I am @<%= current_user_else_default(@conn) %> on Twitter.
@@ -12,7 +12,7 @@
   <% end %>
 </form>
 <%= if current_user?(@conn) do %>
-  <form action="<%=session_path(@conn, :delete)%>" method="post">
+  <form action="<%=session_path(@conn, :delete)%>" method="post" class="form-signout">
     <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
     <button type=submit>Sign out</button>
   </form>
