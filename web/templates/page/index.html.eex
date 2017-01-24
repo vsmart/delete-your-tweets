@@ -24,11 +24,11 @@
   <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>"/>
     <div class="dropdown">
     <div class="step-circle">#2</div>
-    Let's delete tweets
-      <select name="older_than_months">
-        <option value=0>from all time</option>
-        <option value=3>older than 3 months.</option>
-        <option value=6>older than 6 months.</option>
+    Let's delete tweets from
+      <select name="delete_from">
+        <option value=today>today</option>
+        <option value=this_week>this week</option>
+        <option value=this_month>this month</option>
       </select>
     <button type="submit" class="action-button">Go</button>
     </div>

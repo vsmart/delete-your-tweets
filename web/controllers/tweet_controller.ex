@@ -2,61 +2,65 @@ defmodule DeleteYourTweets.TweetController do
   use DeleteYourTweets.Web, :controller
   use Timex
 
-  def delete(conn, %{"older_than_months" => older_than_months}) do
-    until_date = get_until_date(older_than_months)
-    latest_tweet_id = get_latest_tweet_id(until_date)
-    %ExTwitter.Model.Tweet{created_at: created_at, id: id, text: text} =  fetch_and_search_for_max_id(until_date, latest_tweet_id)
+  def delete(conn, %{"delete_from" => delete_from}) do
+    from_date = Timex.now
+    to_date = calculate_to_date(delete_from)
 
-    info = "First tweet older than #{older_than_months} is: \nDate: #{created_at} ID: #{id} | Text: #{text}"
+    result = case get_newest_tweet_id() do
+      {:ok, id}            -> fetch_and_delete_from(to_date, id)
+      {:error, :no_tweets} -> {:info, "You have no tweets that can be deleted."}
+      {:error, _}          -> {:error, "An error occured. Try refreshing the page and starting over."}
+    end
 
     conn
-    |> put_flash(:info, info)
+    |> put_flash(elem(result,0), elem(result,1))
     |> put_view(DeleteYourTweets.PageView)
     |> render("index.html", step: :three)
   end
 
-  def get_until_date(months_str) do
-    months = String.to_integer(months_str)
-
-    Timex.today
-    |> Timex.shift(months: -months)
-  end
-
-  defp get_latest_tweet_id(until_date)  do
-    [%ExTwitter.Model.Tweet{id: id, text: text}] = ExTwitter.user_timeline(count: 1, until: until_date)
-    id
-  end
-
-  defp fetch_and_search_for_max_id(date, max_id) do
-    tweets = fetch_tweets(max_id)
-    number_of_tweets = Enum.count(tweets)
-
-    older_tweet = Enum.find(tweets, fn tweet -> older_than_date(date, tweet)  end)
-
-    if (older_tweet == nil) && (number_of_tweets > 0) do
-      last_id = last_tweet_id(tweets)
-      fetch_and_search_for_max_id(date, last_id)
-    else
-      older_tweet
+  def calculate_to_date(delete_from) do
+    case delete_from do
+      "today" -> Timex.today
+      "this_week" -> Timex.today |> Timex.shift(weeks: -1)
+      "this_month" -> Timex.today |> Timex.shift(months: -1)
     end
   end
 
-  defp older_than_date(date,tweet) do
+  defp get_newest_tweet_id()  do
+    case ExTwitter.user_timeline(count: 1) do
+      [%ExTwitter.Model.Tweet{id: id}] -> {:ok, id}
+      [] -> {:error, :no_tweets}
+      _ -> {:error, :unknown}
+    end
+  end
+
+  defp older_than_date(date, tweet) do
     %ExTwitter.Model.Tweet{created_at: created_at} = tweet
     parsed_date = Timex.parse!(created_at, "%a %b %d %T %z %Y", :strftime)
     Timex.before?(parsed_date, date)
   end
 
-  defp fetch_and_delete_from(max_id) do
+  defp fetch_and_delete_from(date, max_id) do
     tweets = fetch_tweets(max_id)
-    number_of_tweets = Enum.count(tweets)
+    tweets_to_be_deleted = Enum.reject(tweets, fn tweet -> older_than_date(date, tweet)  end)
 
-    tweets |> delete_tweets
+    tweets_to_be_deleted |> delete_tweets
 
-    if number_of_tweets > 0 do
+    if !(reached_date_restriction(tweets, tweets_to_be_deleted))
+      && !(fetched_all_tweets(tweets)) do
       last_id = last_tweet_id(tweets)
-      fetch_and_delete_from(last_id)
+      fetch_and_delete_from(date, last_id)
+    else
+      {:info, "Your tweets were deleted. Whee!"}
     end
+  end
+
+  defp reached_date_restriction(tweets, tweets_to_be_deleted) do
+    (Enum.count(tweets_to_be_deleted) < Enum.count(tweets))
+  end
+
+  defp fetched_all_tweets(tweets) do
+    (Enum.count(tweets) == 0)
   end
 
   defp fetch_tweets(max_id) do
@@ -71,7 +75,7 @@ defmodule DeleteYourTweets.TweetController do
   end
 
   defp last_tweet_id(tweets) do
-    %ExTwitter.Model.Tweet{created_at: date, id: last_tweet_id} = List.last(tweets)
-    last_tweet_id
+    %ExTwitter.Model.Tweet{id: id} = List.last(tweets)
+    id
   end
 end
