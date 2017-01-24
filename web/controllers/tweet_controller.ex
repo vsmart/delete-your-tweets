@@ -6,13 +6,14 @@ defmodule DeleteYourTweets.TweetController do
     from_date = Timex.now
     to_date = calculate_to_date(delete_from)
 
-    to_tweet_id = get_newest_tweet_id()
-    fetch_and_delete_from(to_date, to_tweet_id)
+    result = case get_newest_tweet_id() do
+      {:ok, id}            -> fetch_and_delete_from(to_date, id)
+      {:error, :no_tweets} -> {:info, "You have no tweets that can be deleted."}
+      {:error, _}          -> {:error, "An error occured. Try refreshing the page and starting over."}
+    end
 
-
-    info =  "From date: #{IO.inspect from_date} and to date: #{IO.inspect to_date}"
     conn
-    |> put_flash(:info, info)
+    |> put_flash(elem(result,0), elem(result,1))
     |> put_view(DeleteYourTweets.PageView)
     |> render("index.html", step: :three)
   end
@@ -26,8 +27,11 @@ defmodule DeleteYourTweets.TweetController do
   end
 
   defp get_newest_tweet_id()  do
-    [%ExTwitter.Model.Tweet{id: id}] = ExTwitter.user_timeline(count: 1)
-    id
+    case ExTwitter.user_timeline(count: 1) do
+      [%ExTwitter.Model.Tweet{id: id}] -> {:ok, id}
+      [] -> {:error, :no_tweets}
+      _ -> {:error, :unknown}
+    end
   end
 
   defp older_than_date(date, tweet) do
@@ -46,6 +50,8 @@ defmodule DeleteYourTweets.TweetController do
       && !(fetched_all_tweets(tweets)) do
       last_id = last_tweet_id(tweets)
       fetch_and_delete_from(date, last_id)
+    else
+      {:info, "Your tweets were deleted. Whee!"}
     end
   end
 
