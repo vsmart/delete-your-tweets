@@ -86,6 +86,14 @@ button {
   float: right;
 }
 
+@media (min-width: 768px) {
+  .form-signin {
+    float: left;
+  }
+  .form-signout {
+    float: right;
+  }
+}
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
