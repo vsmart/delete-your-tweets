@@ -21,5 +21,16 @@ defmodule DeleteYourTweets.Router do
     post "/signout", SessionController, :delete
     get "/callback", SessionController, :callback
     post "/tweets/delete", TweetController, :delete
+    forward "/.well-known/acme-challenge/O4mJiD0bcT3gj8mclh9qvSCQynUfTZQLNN1UwreYhLA", CertRouter
+  end
+end
+
+defmodule DeleteYourTweets.CertRouter do
+  use Plug.Router
+  plug :match
+  plug :dispatch
+
+  match _ do
+    send_resp(conn, 200, "O4mJiD0bcT3gj8mclh9qvSCQynUfTZQLNN1UwreYhLA.Pxb-kY88ER7-wv0yEJZDHNanvjjXi4A-Xfcb-1Ejwuo")
   end
 end
