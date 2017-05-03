@@ -6,19 +6,30 @@ defmodule DeleteYourTweets.TweetController do
     from_date = Timex.now
     to_date = calculate_to_date(delete_from)
 
-    result = case get_newest_tweet_id() do
-      {:ok, id}            -> fetch_and_delete_from(to_date, id)
-      {:error, :no_tweets} -> {:info, "You have no tweets that can be deleted."}
-      {:error, _}          -> {:error, "An error occured. Try refreshing the page and starting over."}
+    #   result = case get_newest_tweet_id() do
+      #  {:ok, id}            -> fetch_and_delete_from(to_date, id)
+      # {:error, :no_tweets} -> {:info, "You have no tweets that can be deleted."}
+      #  {:error, _}          -> {:error, "An error occured. Try refreshing the page and starting over."}
+      # end
+
+    result = {:ok, "inserted stuff"}
+    result = case insert_tweet_deletion(%{"tweet_deletion" => %{"created_at" => Timex.now, "type" => delete_from}}) do
+      {:ok, tweet_deletion} -> result
+      {:error, changeset} -> {:error, IO.inspect changeset}
     end
 
     conn
-    |> put_flash(elem(result,0), elem(result,1))
+    |> put_flash(elem(result,0), "blah")
     |> put_view(DeleteYourTweets.PageView)
     |> render("index.html", step: :three)
   end
 
-  def calculate_to_date(delete_from) do
+  defp insert_tweet_deletion(%{"tweet_deletion" => tweet_deletion_params}) do
+    changeset = DeleteYourTweets.TweetDeletion.changeset(%DeleteYourTweets.TweetDeletion{}, tweet_deletion_params)
+    Repo.insert(changeset)
+  end
+
+  defp calculate_to_date(delete_from) do
     case delete_from do
       "today" -> Timex.today
       "this_week" -> Timex.today |> Timex.shift(weeks: -1)
