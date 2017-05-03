@@ -1,5 +1,15 @@
 /* Phoenix flash messages */
 .alert:empty { display: none; }
+.alert{padding:15px;margin-bottom:20px;border:1px solid transparent;border-radius:4px}
+
+.alert-info{color:#31708f;background-color:#d9edf7;border-color:#bce8f1}
+.alert-info hr{border-top-color:#a6e1ec}
+.alert-info .alert-link{color:#245269}
+
+.alert-danger{color:#a94442;background-color:#f2dede;border-color:#ebccd1}
+.alert-danger hr{border-top-color:#e4b9c0}
+.alert-danger .alert-link{color:#843534}
+
 
 /* Phoenix inline forms in links and buttons */
 form.link, form.button {
