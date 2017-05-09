@@ -12,13 +12,21 @@ defmodule DeleteYourTweets.TweetController do
       {:error, _}          -> {:error, "An error occured. Try refreshing the page and starting over."}
     end
 
+    insert_tweet_deletion(%{"tweet_deletion" => %{"created_at" => Timex.now, "type" => delete_from}})
+    deletion_count = Repo.one(from td in DeleteYourTweets.TweetDeletion, select: count("*"))
+
     conn
-    |> put_flash(elem(result,0), elem(result,1))
+    |> put_flash(elem(result,0), "blah")
     |> put_view(DeleteYourTweets.PageView)
-    |> render("index.html", step: :three)
+    |> render("index.html", step: :three, deletion_count: deletion_count )
   end
 
-  def calculate_to_date(delete_from) do
+  defp insert_tweet_deletion(%{"tweet_deletion" => tweet_deletion_params}) do
+    changeset = DeleteYourTweets.TweetDeletion.changeset(%DeleteYourTweets.TweetDeletion{}, tweet_deletion_params)
+    Repo.insert(changeset)
+  end
+
+  defp calculate_to_date(delete_from) do
     case delete_from do
       "today" -> Timex.today
       "this_week" -> Timex.today |> Timex.shift(weeks: -1)

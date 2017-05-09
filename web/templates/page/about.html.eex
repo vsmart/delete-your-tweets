@@ -1,0 +1,36 @@
+<h1><a href="<%=page_path(@conn, :index)%>">delete your tweets</a></h1>
+<br><br>
+<h2># About this project </h2>
+
+<h3>## Why delete-your-tweets?</h3>
+
+I like Twitter. But I also like privacy. Deleting old tweets is an easy way to achieve some combination of both. Of course, deleting public tweets does not mean they are completely gone from public record - if you want that, don't tweet in the first place - or keep your Twitter account on private.
+
+<h3>About the app</h3>
+
+This app is built with Elixir and Phoenix, and runs on Heroku. I gave a talk about it once - find the slides <a href=https://franka.tech/talks/ship-it>here</a>.
+
+The code lives on <a href=https://github.com/vsmart/delete-your-tweets>Github</a>.
+
+<h3>## Stats</h3>
+
+<%= @deletion_count %> times have tweets been deleted on here recently.
+
+<h3>## Privacy</h3>
+
+No IP adresses or any PII (personally identifying info) is stored.
+However, there is some minimal usage tracking in this app. I keep stats about:
+<ul>
+  <li>the time tweets are deleted</li>
+  <li>the options (e.g. today, this week, all time) with which tweets were deleted</li>
+  <li>NOT your twitter handle, tweet ids or any other PII</li>
+</ul>
+
+You can check out the code for this tracking <a href=https://github.com/vsmart/delete-your-tweets/pull/13>here</a>!
+
+<br><br>
+<br><br>
+<br><br>
+<p class="footer"> Made by <a href=https://franka.tech>Franka</a>.</p>
+<p class="footer"> Find, fork, and contribute to the project on <a href=https://github.com/vsmart/delete-your-tweets>Github</a>.
+</p>
