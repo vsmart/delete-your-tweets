@@ -13,12 +13,11 @@ defmodule DeleteYourTweets.TweetController do
     end
 
     insert_tweet_deletion(%{"tweet_deletion" => %{"created_at" => Timex.now, "type" => delete_from}})
-    deletion_count = Repo.one(from td in DeleteYourTweets.TweetDeletion, select: count("*"))
 
     conn
-    |> put_flash(elem(result,0), "blah")
+    |> put_flash(elem(result,0),  elem(result,1))
     |> put_view(DeleteYourTweets.PageView)
-    |> render("index.html", step: :three, deletion_count: deletion_count )
+    |> render("index.html", step: :three)
   end
 
   defp insert_tweet_deletion(%{"tweet_deletion" => tweet_deletion_params}) do
